@@ -1,5 +1,9 @@
 import pandas as pd
 from category_encoders       import OneHotEncoder
+import argparse
+import yaml
+from typing import Text
+from src.utils.logs import get_logger
 
 class DataPrep:
     """
@@ -20,28 +24,28 @@ class DataPrep:
     - subs_char_names(): Substitute underscores in column names with empty strings.
     - get_prep_data(): Return the prepared data after transformations.
     """
+    def __init__(self, config_path: Text):
+        """
+        config_path {Text}: path to config
+        """
+        with open(config_path) as conf_file:
+            self.config = yaml.safe_load(conf_file)
 
-    def __init__(self, data_path):
-        self.data_path = data_path
-        self.raw_data = None
-        self.prepared_data = None
+        self.logger = get_logger('DATA_PREP', log_level=self._load_config()['base']['log_level'])
     
     def load_data(self):
         """
         Load raw data from the specified file.
-
-        Raises:
-        - Exception: If there is an error loading the data.
         """
-        try:
-            self.raw_data = pd.read_csv(self.data_path)
-        except Exception as e:
-            print(f"Error loading data: {e}")
+        self.logger.info('Get dataset path')
+        self.raw_data = pd.read_csv(self.config['data_process']['load_path'])
+
     
     def encoder(self):
         """
         Perform one-hot encoding on specified categorical columns.
         """
+        self.logger.info('Encode variables')
         columns = ['person_home_ownership','loan_intent']
         enc = OneHotEncoder(cols=columns, use_cat_names=True)
         self.prepared_data = enc.fit_transform(self.raw_data)
@@ -50,6 +54,7 @@ class DataPrep:
         """
         Map loan grade categories to numeric values.
         """
+        self.logger.info('Prepare "loan grade" variable')
         grade_mapping = {'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7}
         self.prepared_data['loan_grade'] = self.prepared_data['loan_grade'].map(grade_mapping)
     
@@ -57,6 +62,7 @@ class DataPrep:
         """
         Map default on file categories to numeric values.
         """
+        self.logger.info('Prepare "default onfile" variable')
         grade_mapping = {'N': 0, 'Y': 1}
         self.prepared_data['cb_person_default_on_file'] = self.prepared_data['cb_person_default_on_file'].map(grade_mapping)
 
@@ -64,25 +70,25 @@ class DataPrep:
         """
         Substitute underscores in column names with empty strings.
         """
+        self.logger.info('Prepare variables names')
         new_names = [string.replace("_", "") for string in self.prepared_data.columns.values]
         self.prepared_data.columns = new_names
     
-    def get_prepdata(self):
+    def save_prepdata(self):
         """
-        Return the prepared data after transformations.
+        Save the prepared data after transformations.
 
-        Returns:
-        - pd.DataFrame: The prepared data.
         """
-        return self.prepared_data  
+        self.logger.info('Save prepared data')
+        self.prepared_data.to_csv(self.config['data_process']['save_path']) 
     
-    # Example Usage within the module
     if __name__ == "__main__":
-        # Example Usage:
-        # Assuming you have a CSV file 'raw_data.csv' with columns 'person_home_ownership', 'loan_intent', 'cb_person_default_on_file', 'loan_grade', ...
+        args_parser = argparse.ArgumentParser()
+        args_parser.add_argument('--config', dest='config', required=True)
+        args = args_parser.parse_args()
 
         # Create an instance of DataPrep
-        data_preparer = DataPrep(data_path='raw_data.csv')
+        data_preparer = DataPrep(config_path = args.config)
 
         # Load raw data
         data_preparer.load_data()
@@ -96,9 +102,5 @@ class DataPrep:
         # Substitute underscores in column names with empty strings
         data_preparer.subs_char_names()
 
-        # Get the final prepared dataset
-        prepared_data = data_preparer.get_prep_data()
-
-        # Display the prepared dataset
-        print("Final Prepared Dataset:")
-        print(prepared_data)
+        # Save prepared dataset
+        data_preparer.save_prepdata()

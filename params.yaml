@@ -1,0 +1,7 @@
+base:
+  random_state: 42
+  log_level: INFO
+
+data_process:
+  dataset_csv: 'data/raw/raw_data.csv'
+
