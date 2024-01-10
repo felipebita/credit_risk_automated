@@ -32,7 +32,7 @@ class DataSplit:
         with open(config_path) as conf_file:
             self.config = yaml.safe_load(conf_file)
 
-        self.logger = get_logger('DATA_PREP', log_level=self.config['base']['log_level'])
+        self.logger = get_logger('DATA_SPLIT', log_level=self.config['base']['log_level'])
     
     def load_data(self):
         """

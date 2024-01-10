@@ -7,8 +7,26 @@ data_process:
   save_path: 'data/processed/processed_data.csv'
 
 data_split:
-  load_path: 'data/processed/processed_data.csv'
   test_size: 0.2
   trainset_path: 'data/processed/train.csv'
   testset_path: 'data/processed/test.csv'
+
+train:
+  target: loanstatus
+  cv: 3
+  estimator_name: xgb
+  estimators: 
+    xgb: 
+      param_grid:
+        learning_rate: [0.01, 0.1, 0.2]
+        n_estimators: [50, 150]
+        max_depth: [4, 8]
+        subsample: [0.8, 1.0]
+  model_path: models/model.joblib   
+
+evaluate:
+  metrics_file: 'reports/metrics.json'
+  confusion_matrix_image: 'reports/confusion_matrix.png'
+  confusion_matrix_data: 'reports/confusion_matrix_data.csv'    
+
 
