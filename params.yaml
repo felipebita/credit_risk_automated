@@ -6,3 +6,9 @@ data_process:
   load_path: 'data/raw/raw_data.csv'
   save_path: 'data/processed/processed_data.csv'
 
+data_split:
+  load_path: 'data/processed/processed_data.csv'
+  test_size: 0.2
+  trainset_path: 'data/processed/train.csv'
+  testset_path: 'data/processed/test.csv'
+

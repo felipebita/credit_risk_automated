@@ -21,12 +21,17 @@ class DataPrep:
     - load_data(): Load raw data from the specified file.
     - encoder(): Perform one-hot encoding on specified categorical columns.
     - loan_grade_prep(): Map loan grade categories to numeric values.
+    - def default_onfile_prep(): Map default on file categories to numeric values.
     - subs_char_names(): Substitute underscores in column names with empty strings.
-    - get_prep_data(): Return the prepared data after transformations.
+    - save_prepdata(): Save the prepared data after transformations.
     """
+    
     def __init__(self, config_path: Text):
         """
-        config_path {Text}: path to config
+        Initialize DataSplit instance.
+
+        Parameters:
+        - config_path (str): The file path to the configuration file.
         """
         with open(config_path) as conf_file:
             self.config = yaml.safe_load(conf_file)
@@ -77,7 +82,6 @@ class DataPrep:
     def save_prepdata(self):
         """
         Save the prepared data after transformations.
-
         """
         self.logger.info('Save prepared data')
         self.prepared_data.to_csv(self.config['data_process']['save_path']) 
