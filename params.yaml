@@ -3,5 +3,6 @@ base:
   log_level: INFO
 
 data_process:
-  dataset_csv: 'data/raw/raw_data.csv'
+  load_path: 'data/raw/raw_data.csv'
+  save_path: 'data/processed/processed_data.csv'
 

@@ -31,7 +31,7 @@ class DataPrep:
         with open(config_path) as conf_file:
             self.config = yaml.safe_load(conf_file)
 
-        self.logger = get_logger('DATA_PREP', log_level=self._load_config()['base']['log_level'])
+        self.logger = get_logger('DATA_PREP', log_level=self.config['base']['log_level'])
     
     def load_data(self):
         """
@@ -62,7 +62,7 @@ class DataPrep:
         """
         Map default on file categories to numeric values.
         """
-        self.logger.info('Prepare "default onfile" variable')
+        self.logger.info('Prepare "default on file" variable')
         grade_mapping = {'N': 0, 'Y': 1}
         self.prepared_data['cb_person_default_on_file'] = self.prepared_data['cb_person_default_on_file'].map(grade_mapping)
 
@@ -81,26 +81,29 @@ class DataPrep:
         """
         self.logger.info('Save prepared data')
         self.prepared_data.to_csv(self.config['data_process']['save_path']) 
-    
-    if __name__ == "__main__":
-        args_parser = argparse.ArgumentParser()
-        args_parser.add_argument('--config', dest='config', required=True)
-        args = args_parser.parse_args()
 
-        # Create an instance of DataPrep
-        data_preparer = DataPrep(config_path = args.config)
+if __name__ == "__main__":
+    args_parser = argparse.ArgumentParser()
+    args_parser.add_argument('--config', dest='config', required=True)
+    args = args_parser.parse_args()
 
-        # Load raw data
-        data_preparer.load_data()
+    # Create an instance of DataPrep
+    data_preparer = DataPrep(config_path = args.config)
 
-        # Perform one-hot encoding on specified categorical columns
-        data_preparer.encoder()
+    # Load raw data
+    data_preparer.load_data()
 
-        # Map loan grade categories to numeric values
-        data_preparer.loan_grade_prep()
+    # Perform one-hot encoding on specified categorical columns
+    data_preparer.encoder()
 
-        # Substitute underscores in column names with empty strings
-        data_preparer.subs_char_names()
+    # Map loan grade categories to numeric values
+    data_preparer.loan_grade_prep()
 
-        # Save prepared dataset
-        data_preparer.save_prepdata()
+    # Map loan grade categories to numeric values
+    data_preparer.default_onfile_prep()
+
+    # Substitute underscores in column names with empty strings
+    data_preparer.subs_char_names()
+
+    # Save prepared dataset
+    data_preparer.save_prepdata()
