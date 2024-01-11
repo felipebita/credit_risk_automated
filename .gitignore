@@ -14,6 +14,7 @@ models/*
 reports/*
 
 # Python
-__pycache__
+**/__pycache__/
+**/__init__.py
 .ipynb_checkpoints
 
