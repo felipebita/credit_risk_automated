@@ -11,7 +11,7 @@ stages:
     - data/processed/processed_data.csv
 
   data_split:
-    cmd: python src/stages/data_prep.py --config=params.yaml
+    cmd: python src/stages/data_split.py --config=params.yaml
     deps:
     - data/processed/processed_data.csv
     - src/stages/data_split.py
