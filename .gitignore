@@ -19,3 +19,5 @@ reports/*
 .ipynb_checkpoints
 
 /file.txt
+
+/datadir
