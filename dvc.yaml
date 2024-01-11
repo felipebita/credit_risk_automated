@@ -28,7 +28,7 @@ stages:
     - data/processed/train.csv
     - src/stages/train_model.py
     params:
-    - base.loglevel
+    - base.log_level
     - train
     - data_split.trainset_path
     outs:
@@ -41,7 +41,7 @@ stages:
     - models/model.joblib
     - src/stages/evaluate.py
     params:
-    - base.loglevel
+    - base.log_level
     - data_split.testset_path
     - evaluate
     - train.target

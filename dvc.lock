@@ -1,0 +1,138 @@
+schema: '2.0'
+stages:
+  data_process:
+    cmd: python src/stages/data_prep.py --config=params.yaml
+    deps:
+    - path: data/raw/raw_data.csv
+      hash: md5
+      md5: f55e028c4bc9d2bd4e4e0976599a8994
+      size: 1740274
+    - path: src/stages/data_prep.py
+      hash: md5
+      md5: d8620617467d5a4e1e42aeb84e109735
+      size: 4004
+    params:
+      params.yaml:
+        base.log_level: INFO
+        data_process:
+          load_path: data/raw/raw_data.csv
+          save_path: data/processed/processed_data.csv
+    outs:
+    - path: data/processed/processed_data.csv
+      hash: md5
+      md5: 7abc03a22a231cc25494b961c81e6a3b
+      size: 2034034
+      isexec: true
+  data_split:
+    cmd: python src/stages/data_split.py --config=params.yaml
+    deps:
+    - path: data/processed/processed_data.csv
+      hash: md5
+      md5: 7abc03a22a231cc25494b961c81e6a3b
+      size: 2034034
+    - path: src/stages/data_split.py
+      hash: md5
+      md5: e0d5d382cbaf579bcaa1dc928c7a186c
+      size: 2644
+    params:
+      params.yaml:
+        base:
+          random_state: 42
+          log_level: INFO
+        data_split:
+          test_size: 0.2
+          trainset_path: data/processed/train.csv
+          testset_path: data/processed/test.csv
+    outs:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: ddbd11040ed626341342f74eef5155de
+      size: 407071
+      isexec: true
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 8c1138bbe19e48a8b092e17268b51014
+      size: 1627357
+      isexec: true
+  train_model:
+    cmd: python src/stages/train_model.py --config=params.yaml
+    deps:
+    - path: data/processed/train.csv
+      hash: md5
+      md5: 8c1138bbe19e48a8b092e17268b51014
+      size: 1627357
+    - path: src/stages/train_model.py
+      hash: md5
+      md5: 78f346ee6d873342ed9be67c863db0ed
+      size: 3496
+    params:
+      params.yaml:
+        base.log_level: INFO
+        data_split.trainset_path: data/processed/train.csv
+        train:
+          target: loanstatus
+          cv: 3
+          estimator_name: xgb
+          estimators:
+            xgb:
+              param_grid:
+                learning_rate:
+                - 0.01
+                - 0.1
+                - 0.2
+                n_estimators:
+                - 50
+                - 150
+                max_depth:
+                - 4
+                - 8
+                subsample:
+                - 0.8
+                - 1.0
+          model_path: models/model.joblib
+    outs:
+    - path: models/model.joblib
+      hash: md5
+      md5: 031b6704efd6a2233f571b157d05bf1e
+      size: 847878
+      isexec: true
+  evaluate:
+    cmd: python src/stages/evaluate.py --config=params.yaml
+    deps:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: ddbd11040ed626341342f74eef5155de
+      size: 407071
+    - path: models/model.joblib
+      hash: md5
+      md5: 031b6704efd6a2233f571b157d05bf1e
+      size: 847878
+    - path: src/stages/evaluate.py
+      hash: md5
+      md5: 5a3c8b5c15bf633aef13d195b9b1e1e5
+      size: 3336
+    params:
+      params.yaml:
+        base.log_level: INFO
+        data_split.testset_path: data/processed/test.csv
+        evaluate:
+          metrics_file: reports/metrics.json
+          confusion_matrix_image: reports/confusion_matrix.png
+          confusion_matrix_data: reports/confusion_matrix_data.csv
+        train.target: loanstatus
+    outs:
+    - path: reports/confusion_matrix.png
+      hash: md5
+      md5: bfecf446ea8b2534cbe52e23a4194c22
+      size: 26447
+      isexec: true
+    - path: reports/confusion_matrix_data.csv
+      hash: md5
+      md5: a02de0e9fc1c76c05886a73146c5af0c
+      size: 145869
+      isexec: true
+    - path: reports/metrics.json
+      hash: md5
+      md5: bc3f3d68f9aa16d07e4ec6430a482ac6
+      size: 32
+      isexec: true
