@@ -1,13 +1,52 @@
 stages:
   data_process:
-    cmd: python src/data_prep.py --congif=params.yaml
+    cmd: python src/stages/data_prep.py --congif=params.yaml
     deps:
     - data/raw/raw_data.csv
-    - src/stage/data_prep.py
+    - src/stages/data_prep.py
     params:
     - base.log_level
     - data_process
-    - data_process.load_path
-    - data_process.save_path
     outs:
     - data/processed/processed_data.csv
+
+  data_split:
+    cmd: python src/stages/data_prep.py --congif=params.yaml
+    deps:
+    - data/processed/processed_data.csv
+    - src/stages/data_split.py
+    params:
+    - base
+    - data_split
+    outs:
+    - data/processed/train.csv
+    - data/processed/test.csv
+
+  train_model:
+    cmd: python src/stages/train_model.py --config=params.yaml
+    deps:
+    - data/processed/train.csv
+    - src/stages/train_model.py
+    params:
+    - base.loglevel
+    - train
+    - data_split.trainset_path
+    outs:
+    - models/model.joblib
+  
+  evaluate:
+    cmd: python src/stages/evaluate.py --config=params.yaml
+    deps:
+    - data/processed/test.csv
+    - models/model.joblib
+    - src/stages/evaluate.py
+    params:
+    - base.loglevel
+    - data_split.testset_path
+    - evaluate
+    - train.target
+    outs:
+    - reports/confusion_matrix.png
+    - reports/confusion_matrix_data.csv
+    - reports/metrics.json
+
