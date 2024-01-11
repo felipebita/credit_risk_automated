@@ -9,7 +9,8 @@ venv
 .DS_Store
 
 # Project
-data/*
+data/raw/raw_data.csv
+data/processed/*
 models/*
 reports/*
 
