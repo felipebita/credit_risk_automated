@@ -1,0 +1,13 @@
+stages:
+  data_process:
+    cmd: python src/data_prep.py --congif=params.yaml
+    deps:
+    - data/raw/raw_data.csv
+    - src/stage/data_prep.py
+    params:
+    - base.log_level
+    - data_process
+    - data_process.load_path
+    - data_process.save_path
+    outs:
+    - data/processed/processed_data.csv
