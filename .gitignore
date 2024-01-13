@@ -12,6 +12,8 @@ venv
 data/raw/raw_data.csv
 data/processed/*
 models/*
+reports/confusion_matrix.png
+reports/confusion_matrix_data.csv
 
 
 # Python

@@ -83,10 +83,9 @@ stages:
                 n_estimators:
                 - 100
                 - 150
-                - 200
                 max_depth:
-                - 8
-                - 12
+                - 10
+                - 14
                 subsample:
                 - 0.8
                 - 1
@@ -94,8 +93,8 @@ stages:
     outs:
     - path: models/model.joblib
       hash: md5
-      md5: e7ef3eb1c74b3e7938734abc00a6fa68
-      size: 1060838
+      md5: e60f98b3e5f436e712f935c93da9b10a
+      size: 1190358
       isexec: true
   evaluate:
     cmd: python src/stages/evaluate.py --config=params.yaml
