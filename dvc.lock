@@ -77,24 +77,24 @@ stages:
             xgb:
               param_grid:
                 learning_rate:
-                - 0.01
                 - 0.1
                 - 0.2
+                - 0.3
                 n_estimators:
-                - 50
                 - 150
+                - 200
                 max_depth:
-                - 4
                 - 8
+                - 12
                 subsample:
-                - 0.8
                 - 1.0
+                - 1.5
           model_path: models/model.joblib
     outs:
     - path: models/model.joblib
       hash: md5
-      md5: 031b6704efd6a2233f571b157d05bf1e
-      size: 847878
+      md5: cda65cba381814e24b87b487e31f4f1f
+      size: 1059462
       isexec: true
   evaluate:
     cmd: python src/stages/evaluate.py --config=params.yaml
@@ -105,8 +105,8 @@ stages:
       size: 407071
     - path: models/model.joblib
       hash: md5
-      md5: 031b6704efd6a2233f571b157d05bf1e
-      size: 847878
+      md5: cda65cba381814e24b87b487e31f4f1f
+      size: 1059462
     - path: src/stages/evaluate.py
       hash: md5
       md5: 5a3c8b5c15bf633aef13d195b9b1e1e5
@@ -123,16 +123,16 @@ stages:
     outs:
     - path: reports/confusion_matrix.png
       hash: md5
-      md5: bfecf446ea8b2534cbe52e23a4194c22
-      size: 26447
+      md5: 43ed788582a8d57f6ab52d77f5622f51
+      size: 26142
       isexec: true
     - path: reports/confusion_matrix_data.csv
       hash: md5
-      md5: a02de0e9fc1c76c05886a73146c5af0c
-      size: 145869
+      md5: 1626442f83a8302229383faaf528e4fc
+      size: 145761
       isexec: true
     - path: reports/metrics.json
       hash: md5
-      md5: bc3f3d68f9aa16d07e4ec6430a482ac6
+      md5: 59af934ef0e2edd183bf8fefd639797b
       size: 32
       isexec: true
