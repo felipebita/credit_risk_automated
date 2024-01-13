@@ -18,9 +18,9 @@ train:
   estimators: 
     xgb: 
       param_grid:
-        learning_rate: [0.1, 0.2, 0.3]
-        n_estimators: [100, 150]
-        max_depth: [10, 14]
+        learning_rate: [0.01, 0.1]
+        n_estimators: [50, 150]
+        max_depth: [4, 8]
         subsample: [0.8, 1]
   model_path: models/model.joblib   
 
