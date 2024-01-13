@@ -33,7 +33,7 @@ stages:
     - data_split.trainset_path
     outs:
     - models/model.joblib
-  
+
   evaluate:
     cmd: python src/stages/evaluate.py --config=params.yaml
     deps:
@@ -45,9 +45,12 @@ stages:
     - data_split.testset_path
     - evaluate
     - train.target
-    outs:
-    - reports/confusion_matrix.png
-    - reports/confusion_matrix_data.csv
     metrics:
     - reports/metrics.json:
         cache: false
+    plots:
+    - reports/confusion_matrix_data.csv:
+        template: confusion
+        x: predicted
+        y: y_true
+    - reports/confusion_matrix.png
