@@ -48,5 +48,6 @@ stages:
     outs:
     - reports/confusion_matrix.png
     - reports/confusion_matrix_data.csv
-    - reports/metrics.json
-
+    metrics:
+    - reports/metrics.json:
+        cache: false
